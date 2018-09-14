@@ -1,14 +1,15 @@
 package com.android.example.github.di
 
-import javax.net.ssl.SSLSocketFactory
 import java.io.IOException
 import java.net.InetAddress
 import java.net.Socket
 import java.net.UnknownHostException
+import java.security.GeneralSecurityException
 import java.security.KeyManagementException
+import java.security.KeyStore
 import java.security.NoSuchAlgorithmException
-import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLSocket
+import java.util.*
+import javax.net.ssl.*
 
 
 class TLSSocketFactory : SSLSocketFactory() {
@@ -16,7 +17,7 @@ class TLSSocketFactory : SSLSocketFactory() {
 
     init {
         val context = SSLContext.getInstance("TLS")
-        context.init(null, null, null)
+        context.init(null, arrayOf(systemDefaultTrustManager()), null)
         delegate = context.socketFactory
     }
 
@@ -64,5 +65,21 @@ class TLSSocketFactory : SSLSocketFactory() {
             socket.enabledProtocols = arrayOf("TLSv1.1", "TLSv1.2")
         }
         return socket
+    }
+
+    fun systemDefaultTrustManager(): X509TrustManager {
+        try {
+            val trustManagerFactory = TrustManagerFactory.getInstance(
+                    TrustManagerFactory.getDefaultAlgorithm())
+            trustManagerFactory.init(null as KeyStore?)
+            val trustManagers = trustManagerFactory.trustManagers
+            if (trustManagers.size != 1 || trustManagers[0] !is X509TrustManager) {
+                throw IllegalStateException("Unexpected default trust managers:" + Arrays.toString(trustManagers))
+            }
+            return trustManagers[0] as X509TrustManager
+        } catch (e: GeneralSecurityException) {
+            throw AssertionError() // The system has no TLS. Just give up.
+        }
+
     }
 }

@@ -86,6 +86,9 @@ fun <X, Y> LiveData<X>.switchTo(function: (X?) -> LiveData<Y>): LiveData<Y> {
     return result
 }
 
+fun <V, T> V?.notNull(function: (V) -> LiveData<T>): LiveData<T> =
+        if (this != null) function.invoke(this) else ExtendLiveData()
+
 fun <T> LiveData<T>.filter(function: (T?) -> Boolean): LiveData<T> {
     val liveData = MediatorLiveData<T>()
     liveData.addSource(this) {

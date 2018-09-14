@@ -1,30 +1,18 @@
 package com.example.kantek.simplekotlin
 
-import android.app.Application
-import com.android.example.github.di.TLSSocketFactory
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.example.kantek.simplekotlin.components.DaggerAppComponent
+import dagger.android.AndroidInjector
+import dagger.android.support.DaggerApplication
 
-class MyApplication : Application() {
-
-
-    lateinit var apiService: ApiService
+class MyApplication : DaggerApplication() {
 
     override fun onCreate() {
         super.onCreate()
         sInstance = this
-        val retrofit = Retrofit.Builder()
-                .baseUrl("https://reqres.in/api/")
-                .client(createSSLSafeClient())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        apiService = retrofit.create(ApiService::class.java)
     }
 
-    private fun createSSLSafeClient() = OkHttpClient.Builder()
-            .sslSocketFactory(TLSSocketFactory())
-            .build()
+    override fun applicationInjector(): AndroidInjector<out DaggerApplication> =
+            DaggerAppComponent.builder().create(this)
 
     companion object {
         private lateinit var sInstance: MyApplication

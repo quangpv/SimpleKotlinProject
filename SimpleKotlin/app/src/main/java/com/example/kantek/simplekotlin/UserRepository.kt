@@ -3,9 +3,9 @@ package com.example.kantek.simplekotlin
 import com.android.support.kotlin.core.network.ApiResponse
 import com.android.support.kotlin.core.network.RequestBound
 import retrofit2.Call
+import javax.inject.Inject
 
-class UserRepository {
-    var apiService = MyApplication.instance.apiService
+class UserRepository @Inject constructor(private var apiService: ApiService) {
 
     fun loadUsers() = object : RequestBound<List<String>, List<String>>() {
         override fun createMockData(): List<String>? {
@@ -29,8 +29,8 @@ class UserRepository {
         override fun createCall(): Call<ApiResponse<User>>? = apiService.getUser(id)
     }.asLiveData()
 
-    fun registry() = object : RequestBound<User, User>() {
-        override fun createMockData(): User? = null
+    fun registry(it: User) = object : RequestBound<User, User>() {
+        override fun createMockData(): User? = it
 
         override fun createCall(): Call<ApiResponse<User>>? = null
 

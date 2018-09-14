@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
@@ -17,6 +17,7 @@ android {
     buildTypes {
         debug {
             buildConfigField "boolean", "MOCK_DATA", MOCK_DATA
+            buildConfigField "String", "CACHE", CACHE
         }
         release {
             minifyEnabled false
@@ -26,7 +27,11 @@ android {
 }
 
 dependencies {
+
+    def daggerVersion = "2.16"
     def lifecycle_version = "1.1.1"
+    def interceptorVersion = "2.0.7"
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:28.0.0-rc02'
@@ -38,4 +43,13 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    //Di
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    implementation "com.google.dagger:dagger-android:$daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    kapt  "com.google.dagger:dagger-compiler:$daggerVersion"
+    kapt  "com.google.dagger:dagger-android-processor:$daggerVersion"
+    implementation("com.github.ihsanbal:LoggingInterceptor:$interceptorVersion") {
+        exclude group: 'org.json', module: 'json'
+    }
 }
