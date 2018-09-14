@@ -28,27 +28,40 @@ android {
 
 dependencies {
     def daggerVersion = "2.16"
-    def lifecycle_version = "1.1.1"
+    def archVersion = "1.1.1"
     def interceptorVersion = "2.0.7"
+    def paging_version = "1.0.1"
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation 'com.android.support:recyclerview-v7:28.0.0-rc02'
     implementation 'com.android.support:appcompat-v7:28.0.0-rc02'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
+
+    //Arc Components
+    implementation "android.arch.lifecycle:extensions:$archVersion"
+    implementation "android.arch.persistence.room:runtime:$archVersion"
+    implementation "android.arch.paging:runtime:$paging_version"
+    kapt "android.arch.persistence.room:compiler:$archVersion"
+
+    //Network
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation("com.github.ihsanbal:LoggingInterceptor:$interceptorVersion") {
+        exclude group: 'org.json', module: 'json'
+    }
+
     //Di
     implementation "com.google.dagger:dagger:$daggerVersion"
     implementation "com.google.dagger:dagger-android:$daggerVersion"
     implementation "com.google.dagger:dagger-android-support:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
-    implementation("com.github.ihsanbal:LoggingInterceptor:$interceptorVersion") {
-        exclude group: 'org.json', module: 'json'
-    }
-    implementation 'com.android.support:recyclerview-v7:28.0.0-rc02'
+
+    //Testing
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

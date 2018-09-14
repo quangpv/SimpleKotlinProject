@@ -24,11 +24,11 @@ open class ExtendLiveData<T> : MediatorLiveData<T>() {
     protected val mLiveDataSources: MutableList<LiveData<*>> = ArrayList()
 
     fun loading(loading: Boolean) {
-        this.loading.value = loading
+        this.loading.postValue(loading)
     }
 
     fun error(error: Exception) {
-        this.error.value = error
+        this.error.postValue(error)
     }
 
     fun notifyLoadingTo(loading: SingleLiveEvent<Boolean>): ExtendLiveData<T> {
@@ -36,14 +36,14 @@ open class ExtendLiveData<T> : MediatorLiveData<T>() {
             val isLoading = loading.mLiveDataSources
                     .map { if (it.value == null) false else it.value as Boolean }
                     .reduce { sum, next -> sum || next }
-            if (loading.value != isLoading) loading.value = isLoading
+            if (loading.value != isLoading) loading.postValue(isLoading)
         }
         return this
     }
 
     fun notifyErrorTo(error: ExtendLiveData<Exception>): ExtendLiveData<T> {
         error.addSource(this.error) {
-            error.value = it
+            error.postValue(it)
         }
         return this
     }
