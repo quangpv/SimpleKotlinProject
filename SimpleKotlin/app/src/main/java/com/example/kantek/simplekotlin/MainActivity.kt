@@ -3,23 +3,25 @@ package com.example.kantek.simplekotlin
 import android.os.Bundle
 import com.android.support.kotlin.core.base.BaseActivity
 import com.android.support.kotlin.core.LayoutId
-import com.android.support.kotlin.core.livedata.call
 import com.android.support.kotlin.core.livedata.observe
 import kotlinx.android.synthetic.main.activity_main.*
 
 @LayoutId(R.layout.activity_main)
 class MainActivity : BaseActivity<MainViewModel>() {
     private var mUser: User? = null
+    private lateinit var mUserAdapter: UserAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mViewModel.name.observe(this) { txtName.text = it }
+        mUserAdapter = UserAdapter(recvUser)
+        mViewModel.users.observe(this) { mUserAdapter.items = it }
         mViewModel.user.observe(this) { this.mUser = it!!; txtUser.text = it.toString() }
+
         mViewModel.loading.observe(this, this::showLoading)
         mViewModel.registrySuccess.observe(this, this::showSuccess)
         mViewModel.registryError.observe(this, this::showError)
         mViewModel.error.observe(this, this::showError)
 
-        txtName.setOnClickListener { mViewModel.refresh.call() }
         txtUser.setOnClickListener { mViewModel.registry.value = mUser }
         mViewModel.userId.value = 2
     }

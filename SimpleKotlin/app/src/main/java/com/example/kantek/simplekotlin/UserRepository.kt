@@ -7,20 +7,10 @@ import javax.inject.Inject
 
 class UserRepository @Inject constructor(private var apiService: ApiService) {
 
-    fun loadUsers() = object : RequestBound<List<String>, List<String>>() {
-        override fun createMockData(): List<String>? {
-            val users: MutableList<String> = mutableListOf()
-            for (i in 0..10) {
-                users.add("User $i")
-            }
-            return users.filter { it.contains(Regex("[1-5]")) }
-                    .sortedByDescending { it }
-                    .map { "$it Mapped" }
-        }
-
-        override fun convertToResult(result: List<String>?): List<String>? = result
-
-        override fun createCall(): Call<ApiResponse<List<String>>>? = null
+    fun loadUsers() = object : RequestBound<MutableList<User>, MutableList<User>>() {
+        override fun isMock() = false
+        override fun convertToResult(result: MutableList<User>?): MutableList<User>? = result
+        override fun createCall(): Call<ApiResponse<MutableList<User>>>? = apiService.users
     }.asLiveData()
 
     fun loadUser(id: Int) = object : RequestBound<User, User>() {

@@ -13,13 +13,12 @@ class MainViewModel @Inject constructor(userRepository: UserRepository) : BaseVi
     var registry = SingleLiveEvent<User>()
     val registryError = SingleLiveEvent<Exception>()
 
-    var name: LiveData<String> = refresh
+    var users: LiveData<MutableList<User>> = refresh
             .switchTo {
                 userRepository.loadUsers()
                         .notifyLoadingTo(loading)
                         .notifyErrorTo(error)
             }
-            .map { it!!.reduce { sum, next -> "$sum $next ${Random().nextInt()}" } }
 
     var user = userId
             .switchTo { it ->
