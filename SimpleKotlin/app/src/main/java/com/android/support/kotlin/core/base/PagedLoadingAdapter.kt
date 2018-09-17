@@ -9,6 +9,12 @@ abstract class PagedLoadingAdapter<T>(view: RecyclerView, diffCallback: DiffUtil
     private val TYPE_LOADING = 1
     private val TYPE_ITEM = 2
     var loading = false
+        set(value) {
+            val itemIndex = super.getItemCount()
+            field = value
+            if (value) notifyItemInserted(itemIndex)
+            else notifyItemRemoved(itemIndex)
+        }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == TYPE_ITEM)

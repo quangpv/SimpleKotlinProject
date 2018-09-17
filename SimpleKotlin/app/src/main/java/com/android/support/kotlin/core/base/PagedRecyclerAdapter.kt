@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView
 abstract class PagedRecyclerAdapter<T>(val view: RecyclerView, DIFF_CALLBACK: DiffUtil.ItemCallback<T>) :
         PagedListAdapter<T, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
-
     init {
         view.layoutManager = LinearLayoutManager(view.context)
         view.adapter = this
