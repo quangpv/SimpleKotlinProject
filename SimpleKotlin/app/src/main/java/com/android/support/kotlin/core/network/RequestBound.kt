@@ -3,13 +3,14 @@ package com.android.support.kotlin.core.network
 import android.util.Log
 import com.example.kantek.simplekotlin.BuildConfig
 import com.android.support.kotlin.core.livedata.ExtendLiveData
+import com.android.support.kotlin.core.livedata.ResponseLiveData
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 abstract class RequestBound<ResultType, RequestType> {
-    private val mLiveData = ExtendLiveData<ResultType>()
+    private val mLiveData = ResponseLiveData<ResultType>()
 
     init {
         val localData = loadFromLocal()
@@ -82,7 +83,7 @@ abstract class RequestBound<ResultType, RequestType> {
     protected open fun saveCallResult(result: ResultType?) {
     }
 
-    fun asLiveData(): ExtendLiveData<ResultType> = mLiveData
+    fun asLiveData(): ResponseLiveData<ResultType> = mLiveData
 
     protected abstract fun convertToResult(result: RequestType?): ResultType?
 

@@ -4,10 +4,10 @@ import android.arch.paging.DataSource
 import android.arch.paging.LivePagedListBuilder
 import android.arch.paging.PagedList
 import com.android.support.kotlin.core.AppExecutors
-import com.android.support.kotlin.core.livedata.ExtendLiveData
+import com.android.support.kotlin.core.livedata.ResponseLiveData
 
 abstract class PageRequestBound<PageType>(pageSize: Int) {
-    protected var mLiveData = ExtendLiveData<PagedList<PageType>>()
+    protected var mLiveData = ResponseLiveData<PagedList<PageType>>()
     protected var mAppExecutors = AppExecutors()
 
     init {
@@ -24,6 +24,6 @@ abstract class PageRequestBound<PageType>(pageSize: Int) {
 
     abstract fun createDataSource(): DataSource.Factory<Int, PageType>
 
-    fun asLiveData(): ExtendLiveData<PagedList<PageType>> = mLiveData
+    fun asLiveData(): ResponseLiveData<PagedList<PageType>> = mLiveData
 
 }

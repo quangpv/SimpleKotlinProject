@@ -7,46 +7,9 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 
 open class ExtendLiveData<T> : MediatorLiveData<T>() {
-    private var mLoading: MutableLiveData<Boolean>? = null
-    val loading: MutableLiveData<Boolean>
-        get() {
-            if (mLoading == null) mLoading = MutableLiveData()
-            return mLoading ?: throw AssertionError("Can't to init loading")
-        }
-
-    private var mError: MutableLiveData<Exception>? = null
-    val error: MutableLiveData<Exception>
-        get() {
-            if (mError == null) mError = MutableLiveData()
-            return mError ?: throw AssertionError("Can't to init error")
-        }
-
-    protected val mLiveDataSources: MutableList<LiveData<*>> = ArrayList()
-
-    fun loading(loading: Boolean) {
-        this.loading.postValue(loading)
-    }
-
-    fun error(error: Exception) {
-        this.error.postValue(error)
-    }
-
-    fun notifyLoadingTo(loading: SingleLiveEvent<Boolean>): ExtendLiveData<T> {
-        loading.addSource(this.loading) { _ ->
-            val isLoading = loading.mLiveDataSources
-                    .map { if (it.value == null) false else it.value as Boolean }
-                    .reduce { sum, next -> sum || next }
-            if (loading.value != isLoading) loading.postValue(isLoading)
-        }
-        return this
-    }
-
-    fun notifyErrorTo(error: ExtendLiveData<Exception>): ExtendLiveData<T> {
-        error.addSource(this.error) {
-            error.postValue(it)
-        }
-        return this
-    }
+    private val mLiveDataSources: MutableList<LiveData<*>> = ArrayList()
+    val liveDataSources: MutableList<LiveData<*>>
+        get() = mLiveDataSources
 
     override fun <S : Any?> addSource(source: LiveData<S>, onChanged: Observer<S>) {
         super.addSource(source, onChanged)
@@ -86,7 +49,7 @@ fun <X, Y> LiveData<X>.switchTo(function: (X?) -> LiveData<Y>): LiveData<Y> {
     return result
 }
 
-fun <V, T> V?.notNull(function: (V) -> LiveData<T>): LiveData<T> =
+fun <V, T> V?.nonNull(function: (V) -> LiveData<T>): LiveData<T> =
         if (this != null) function.invoke(this) else ExtendLiveData()
 
 fun <T> LiveData<T>.filter(function: (T?) -> Boolean): LiveData<T> {

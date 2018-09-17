@@ -8,7 +8,7 @@ import retrofit2.Call
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(private val apiService: ApiService,
-                                         private val appDatabase: AppDatabase) {
+                                         appDatabase: AppDatabase) {
     private val userDao = appDatabase.userDao()
 
     fun loadUsers() = object : RequestBound<MutableList<User>, MutableList<User>>() {
@@ -44,7 +44,7 @@ class UserRepository @Inject constructor(private val apiService: ApiService,
             val users: MutableList<User> = ArrayList()
             if (key != null) {
                 for (i in ((key - 1) * requestedLoadSize)..(key * requestedLoadSize)) {
-                    var user = User()
+                    val user = User()
                     users.add(user)
                     user.id = i
                     user.firstName = "$i Name"

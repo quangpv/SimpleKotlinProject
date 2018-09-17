@@ -20,7 +20,7 @@ class MainViewModel @Inject constructor(userRepository: UserRepository) : BaseVi
 
     var user = userId
             .switchTo { it ->
-                it.notNull {
+                it.nonNull {
                     userRepository.loadUser(it)
                             .notifyErrorTo(error)
                             .notifyLoadingTo(loading)
@@ -29,7 +29,7 @@ class MainViewModel @Inject constructor(userRepository: UserRepository) : BaseVi
 
     var registrySuccess = registry
             .switchTo { it ->
-                it.notNull {
+                it.nonNull {
                     userRepository.registry(it)
                             .notifyErrorTo(registryError)
                             .notifyLoadingTo(loading)
