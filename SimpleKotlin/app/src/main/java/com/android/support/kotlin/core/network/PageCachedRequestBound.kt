@@ -1,6 +1,7 @@
 package com.android.support.kotlin.core.network
 
 import android.util.Log
+import com.example.kantek.simplekotlin.BuildConfig
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -9,8 +10,17 @@ import retrofit2.Response
 abstract class PageCachedRequestBound<PageType, ResultType, RequestType>(pageSize: Int) : PageRequestBound<PageType>(pageSize) {
 
     init {
-        fetchFromRemote()
+        if (!isMock())
+            fetchFromRemote()
+        else
+            mAppExecutors.diskIO().execute {
+                saveCallResult(createMockData())
+            }
     }
+
+    protected open fun createMockData(): ResultType? = null
+
+    protected open fun isMock() = BuildConfig.MOCK_DATA
 
     private fun fetchFromRemote() {
         mLiveData.loading(true)
@@ -58,8 +68,7 @@ abstract class PageCachedRequestBound<PageType, ResultType, RequestType>(pageSiz
     protected open fun onCallFail(exception: Exception) {
     }
 
-    protected open fun saveCallResult(result: ResultType?) {
-    }
+    protected abstract fun saveCallResult(result: ResultType?)
 
     protected abstract fun convertToResult(result: RequestType?): ResultType?
 

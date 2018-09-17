@@ -23,6 +23,10 @@ public interface ApiService {
     @Headers({"Content-Type: application/json"})
     Call<ApiResponse<List<User>>> getUsers();
 
+    @GET("users?page=1&per_page=20")
+    @Headers({"Content-Type: application/json"})
+    Call<ApiResponse<List<User>>> getCachedUsers();
+
     @GET("users")
     @Headers({"Content-Type: application/json"})
     Call<ApiPageResponse<User>> getPageUsers(@Query("page") Integer page, @Query("per_page") int pageSize);

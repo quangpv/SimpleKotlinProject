@@ -3,31 +3,47 @@ package com.android.support.kotlin.core.network
 import android.arch.paging.DataSource
 import android.arch.paging.PageKeyedDataSource
 import android.util.Log
+import com.example.kantek.simplekotlin.BuildConfig
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 abstract class PageByIndexRequestBound<ResultType, RequestType>(pageSize: Int)
     : PageRequestBound<ResultType>(pageSize) {
+    private val MAX_MOCK_PAGE = 5
 
     override fun createDataSource() = object : DataSource.Factory<Int, RequestType>() {
         override fun create() = object : PageKeyedDataSource<Int, RequestType>() {
             override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, RequestType>) {
-                fetchFromRemote(1, params.requestedLoadSize) { result, nextPage ->
+                if (isMock()) {
+                    createMockData(1, params.requestedLoadSize)?.let { callback.onResult(it, null, 2) }
+                } else fetchFromRemote(1, params.requestedLoadSize) { result, nextPage ->
                     callback.onResult(result, null, nextPage)
                 }
+
             }
 
             override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, RequestType>) {
-            }
-
-            override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, RequestType>) {
-                fetchFromRemote(params.key, params.requestedLoadSize) { result, next ->
+                if (isMock()) {
+                    val nextPage = nextMockPage(params.key)
+                    if (nextPage != -1)
+                        createMockData(params.key, params.requestedLoadSize)?.let { callback.onResult(it, nextPage) }
+                } else fetchFromRemote(params.key, params.requestedLoadSize) { result, next ->
                     callback.onResult(result, next)
                 }
             }
+
+            override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, RequestType>) {
+
+            }
         }
     }.map(this::convertToResult)
+
+    protected open fun createMockData(key: Int?, requestedLoadSize: Int): MutableList<RequestType>? = null
+
+    protected open fun isMock() = BuildConfig.MOCK_DATA
+
+    private fun nextMockPage(key: Int) = if (key + 1 > MAX_MOCK_PAGE) -1 else key + 1
 
     private fun fetchFromRemote(page: Int?, pageSize: Int, callback: (MutableList<RequestType>, Int) -> Unit) {
         val call = createCall(page, pageSize) ?: throw RuntimeException("Call can not be null")
@@ -58,13 +74,13 @@ abstract class PageByIndexRequestBound<ResultType, RequestType>(pageSize: Int)
                           callback: (MutableList<RequestType>, Int) -> Unit) {
         result.result?.let { callback.invoke(it, result.nextPage) }
         mLiveData.loading(false)
-        Log.e("RESPONSE_SUCCESS", "${result.result?.size}")
+        Log.e("PAGE/SUCCESS", "${result.result?.size}  - ${result.nextPage}")
     }
 
     private fun onError(e: Exception) {
         mLiveData.error(e)
         mLiveData.loading(false)
-        Log.e("RESPONSE_ERROR", e.message)
+        Log.e("PAGE/ERROR", e.message)
     }
 
     abstract fun convertToResult(it: RequestType): ResultType

@@ -14,7 +14,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mUserAdapter = UserAdapter(recvUser)
-        mViewModel.users.observe(this) { mUserAdapter.items = it }
+        mViewModel.users.observe(this) { mUserAdapter.submitList(it) }
         mViewModel.user.observe(this) { this.mUser = it!!; txtUser.text = it.toString() }
 
         mViewModel.loading.observe(this, this::showLoading)

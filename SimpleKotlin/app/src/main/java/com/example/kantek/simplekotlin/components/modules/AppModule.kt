@@ -1,7 +1,9 @@
 package com.example.kantek.simplekotlin.components.modules
 
+import android.arch.persistence.room.Room
 import android.content.Context
 import com.example.kantek.simplekotlin.ApiService
+import com.example.kantek.simplekotlin.AppDatabase
 import com.example.kantek.simplekotlin.BuildConfig
 import com.example.kantek.simplekotlin.MyApplication
 import dagger.Module
@@ -28,5 +30,11 @@ class AppModule {
     @Singleton
     fun provideSharePreference(context: Context) =
             context.getSharedPreferences(BuildConfig.CACHE, Context.MODE_PRIVATE)
+
+    @Provides
+    @Singleton
+    fun provideDatabase(context: Context) =
+            Room.databaseBuilder(context,AppDatabase::class.java,"app_database")
+                    .build()
 
 }

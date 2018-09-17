@@ -1,9 +1,7 @@
 package com.example.kantek.simplekotlin
 
-import android.arch.lifecycle.*
 import com.android.support.kotlin.core.base.BaseViewModel
 import com.android.support.kotlin.core.livedata.*
-import java.util.*
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(userRepository: UserRepository) : BaseViewModel() {
@@ -13,9 +11,9 @@ class MainViewModel @Inject constructor(userRepository: UserRepository) : BaseVi
     var registry = SingleLiveEvent<User>()
     val registryError = SingleLiveEvent<Exception>()
 
-    var users: LiveData<MutableList<User>> = refresh
+    var users = refresh
             .switchTo {
-                userRepository.loadUsers()
+                userRepository.loadPageUsers()
                         .notifyLoadingTo(loading)
                         .notifyErrorTo(error)
             }
