@@ -1,4 +1,4 @@
-package com.example.kantek.simplekotlin
+package com.example.kantek.simplekotlin.views
 
 import android.annotation.SuppressLint
 import android.support.v7.util.DiffUtil
@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.android.support.kotlin.core.base.BaseViewHolder
 import com.android.support.kotlin.core.base.PagedRecyclerAdapter
+import com.example.kantek.simplekotlin.R
+import com.example.kantek.simplekotlin.models.User
 import kotlinx.android.synthetic.main.item_view_user.view.*
 
 class UserAdapter(view: RecyclerView) : PagedRecyclerAdapter<User>(view, DIFF_CALLBACK) {

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="400dp"
     android:orientation="vertical"
-    tools:context="UserAdapter">
+    tools:context=".views.UserAdapter">
 
     <TextView
         android:id="@+id/txtName"

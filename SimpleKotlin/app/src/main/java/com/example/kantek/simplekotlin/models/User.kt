@@ -1,4 +1,4 @@
-package com.example.kantek.simplekotlin
+package com.example.kantek.simplekotlin.models
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey

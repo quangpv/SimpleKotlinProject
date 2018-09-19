@@ -1,9 +1,13 @@
-package com.example.kantek.simplekotlin
+package com.example.kantek.simplekotlin.views
 
 import android.os.Bundle
 import com.android.support.kotlin.core.base.BaseActivity
 import com.android.support.kotlin.core.LayoutId
+import com.android.support.kotlin.core.livedata.call
 import com.android.support.kotlin.core.livedata.observe
+import com.example.kantek.simplekotlin.viewmodels.MainViewModel
+import com.example.kantek.simplekotlin.R
+import com.example.kantek.simplekotlin.models.User
 import kotlinx.android.synthetic.main.activity_main.*
 
 @LayoutId(R.layout.activity_main)
@@ -24,6 +28,9 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
         txtUser.setOnClickListener { mViewModel.registry.value = mUser }
         mViewModel.userId.value = 2
+        mViewModel.download.value = 2
+        mViewModel.downloadStatus.observe(this) { showSuccess(it) }
+        mViewModel.zipStatus.observe(this) { showSuccess(it) }
     }
 
     private fun showSuccess(it: String?) {

@@ -1,9 +1,10 @@
-package com.example.kantek.simplekotlin
+package com.example.kantek.simplekotlin.repositories
 
 import com.android.support.kotlin.core.network.ApiResponse
 import com.android.support.kotlin.core.network.PageByIndexRequestBound
 import com.android.support.kotlin.core.network.PageCachedRequestBound
 import com.android.support.kotlin.core.network.RequestBound
+import com.example.kantek.simplekotlin.models.User
 import retrofit2.Call
 import javax.inject.Inject
 

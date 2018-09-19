@@ -1,10 +1,9 @@
-package com.example.kantek.simplekotlin;
+package com.example.kantek.simplekotlin.repositories;
 
 import com.android.support.kotlin.core.network.ApiPageResponse;
 import com.android.support.kotlin.core.network.ApiResponse;
+import com.example.kantek.simplekotlin.models.User;
 
-
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 

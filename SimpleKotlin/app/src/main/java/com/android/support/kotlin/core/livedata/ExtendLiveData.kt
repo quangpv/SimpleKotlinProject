@@ -49,6 +49,12 @@ fun <X, Y> LiveData<X>.switchTo(function: (X?) -> LiveData<Y>): LiveData<Y> {
     return result
 }
 
+fun <T> LiveData<T>.forwardTo(liveData: ExtendLiveData<T>) {
+    liveData.addSource(this) {
+        liveData.postValue(it)
+    }
+}
+
 fun <V, T> V?.nonNull(function: (V) -> LiveData<T>): LiveData<T> =
         if (this != null) function.invoke(this) else ExtendLiveData()
 

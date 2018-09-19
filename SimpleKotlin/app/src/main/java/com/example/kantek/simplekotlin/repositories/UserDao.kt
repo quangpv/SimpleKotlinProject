@@ -1,10 +1,11 @@
-package com.example.kantek.simplekotlin
+package com.example.kantek.simplekotlin.repositories
 
 import android.arch.paging.DataSource
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
+import com.example.kantek.simplekotlin.models.User
 
 @Dao
 interface UserDao {

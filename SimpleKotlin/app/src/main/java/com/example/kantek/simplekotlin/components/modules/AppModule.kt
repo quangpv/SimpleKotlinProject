@@ -2,8 +2,9 @@ package com.example.kantek.simplekotlin.components.modules
 
 import android.arch.persistence.room.Room
 import android.content.Context
-import com.example.kantek.simplekotlin.ApiService
-import com.example.kantek.simplekotlin.AppDatabase
+import androidx.work.WorkManager
+import com.example.kantek.simplekotlin.repositories.ApiService
+import com.example.kantek.simplekotlin.repositories.AppDatabase
 import com.example.kantek.simplekotlin.BuildConfig
 import com.example.kantek.simplekotlin.MyApplication
 import dagger.Module
@@ -34,7 +35,11 @@ class AppModule {
     @Provides
     @Singleton
     fun provideDatabase(context: Context) =
-            Room.databaseBuilder(context,AppDatabase::class.java,"app_database")
+            Room.databaseBuilder(context, AppDatabase::class.java, "app_database")
                     .build()
+
+    @Provides
+    @Singleton
+    fun provideWorkManager() = WorkManager.getInstance()
 
 }

@@ -1,7 +1,7 @@
 package com.example.kantek.simplekotlin.components.modules
 
 import dagger.Module
-import com.example.kantek.simplekotlin.MainViewModel
+import com.example.kantek.simplekotlin.viewmodels.MainViewModel
 import android.arch.lifecycle.ViewModel
 import com.android.support.kotlin.core.ViewModelKey
 import dagger.multibindings.IntoMap
