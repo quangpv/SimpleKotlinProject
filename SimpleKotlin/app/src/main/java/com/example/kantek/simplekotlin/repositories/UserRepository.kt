@@ -57,17 +57,17 @@ class UserRepository @Inject constructor(private val apiService: ApiService,
 
         override fun createCall(page: Int?, pageSize: Int) = apiService.getPageUsers(page, pageSize)
         override fun convertToResult(it: User) = it
-    }.asLiveData()
+    }
 
     fun loadUser(id: Int) = object : RequestBound<User, User>() {
         override fun convertToResult(result: User?) = result
         override fun isMock() = false
         override fun createCall() = apiService.getUser(id)
-    }.asLiveData()
+    }
 
     fun registry(it: User) = object : RequestBound<User, User>() {
         override fun createMockData() = it
         override fun createCall() = null
         override fun convertToResult(result: User?) = result
-    }.asLiveData()
+    }
 }

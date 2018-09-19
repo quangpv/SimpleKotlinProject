@@ -5,6 +5,7 @@ import com.android.support.kotlin.core.base.BaseActivity
 import com.android.support.kotlin.core.LayoutId
 import com.android.support.kotlin.core.livedata.call
 import com.android.support.kotlin.core.livedata.observe
+import com.android.support.kotlin.core.livedata.refresh
 import com.example.kantek.simplekotlin.viewmodels.MainViewModel
 import com.example.kantek.simplekotlin.R
 import com.example.kantek.simplekotlin.models.User
@@ -25,12 +26,14 @@ class MainActivity : BaseActivity<MainViewModel>() {
         mViewModel.registrySuccess.observe(this, this::showSuccess)
         mViewModel.registryError.observe(this, this::showError)
         mViewModel.error.observe(this, this::showError)
-
-        txtUser.setOnClickListener { mViewModel.registry.value = mUser }
-        mViewModel.userId.value = 2
-        mViewModel.download.value = 2
         mViewModel.downloadStatus.observe(this) { showSuccess(it) }
         mViewModel.zipStatus.observe(this) { showSuccess(it) }
+
+        txtLoading.setOnClickListener { mViewModel.userId.refresh() }
+        txtUser.setOnClickListener { mViewModel.registry.value = mUser }
+
+        mViewModel.userId.value = 2
+        mViewModel.download.value = 2
     }
 
     private fun showSuccess(it: String?) {
@@ -38,7 +41,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
     }
 
     private fun showError(it: Exception?) {
-        txtLoading.text = it!!.message
+        txtError.text = it!!.message
     }
 
     private fun showLoading(it: Boolean?) {

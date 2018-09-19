@@ -47,7 +47,7 @@ abstract class PageByIndexRequestBound<ResultType, RequestType>(pageSize: Int)
 
     private fun fetchFromRemote(page: Int?, pageSize: Int, callback: (MutableList<RequestType>, Int) -> Unit) {
         val call = createCall(page, pageSize) ?: throw RuntimeException("Call can not be null")
-        mLiveData.loading(true)
+        loading(true)
         call.enqueue(object : Callback<ApiPageResponse<RequestType>> {
             override fun onResponse(call: Call<ApiPageResponse<RequestType>>, response: Response<ApiPageResponse<RequestType>>) {
                 if (!response.isSuccessful) {
@@ -73,13 +73,13 @@ abstract class PageByIndexRequestBound<ResultType, RequestType>(pageSize: Int)
     private fun onSuccess(result: ApiPageResponse<RequestType>,
                           callback: (MutableList<RequestType>, Int) -> Unit) {
         result.result?.let { callback.invoke(it, result.nextPage) }
-        mLiveData.loading(false)
+        loading(false)
         Log.e("PAGE/SUCCESS", "${result.result?.size}  - ${result.nextPage}")
     }
 
     private fun onError(e: Exception) {
-        mLiveData.error(e)
-        mLiveData.loading(false)
+        error(e)
+        loading(false)
         Log.e("PAGE/ERROR", e.message)
     }
 

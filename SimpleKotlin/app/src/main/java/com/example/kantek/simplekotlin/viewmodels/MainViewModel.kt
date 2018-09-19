@@ -24,6 +24,7 @@ class MainViewModel @Inject constructor(userRepository: UserRepository,
                 userRepository.loadPageUsers()
                         .notifyLoadingTo(loading)
                         .notifyErrorTo(error)
+                        .asLiveData()
             }
 
     var user = userId
@@ -32,6 +33,7 @@ class MainViewModel @Inject constructor(userRepository: UserRepository,
                     userRepository.loadUser(it)
                             .notifyErrorTo(error)
                             .notifyLoadingTo(loading)
+                            .asLiveData()
                 }
             }
 
@@ -41,6 +43,7 @@ class MainViewModel @Inject constructor(userRepository: UserRepository,
                     userRepository.registry(it)
                             .notifyErrorTo(registryError)
                             .notifyLoadingTo(loading)
+                            .asLiveData()
                 }
             }
             .filter { it != null }

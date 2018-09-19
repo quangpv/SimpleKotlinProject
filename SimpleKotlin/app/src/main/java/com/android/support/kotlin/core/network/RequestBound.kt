@@ -2,17 +2,13 @@ package com.android.support.kotlin.core.network
 
 import android.util.Log
 import com.example.kantek.simplekotlin.BuildConfig
-import com.android.support.kotlin.core.livedata.ExtendLiveData
-import com.android.support.kotlin.core.livedata.ResponseLiveData
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-abstract class RequestBound<ResultType, RequestType> {
-    private val mLiveData = ResponseLiveData<ResultType>()
-
-    init {
+abstract class RequestBound<ResultType, RequestType> : BaseRequestBound<ResultType>() {
+    override fun execute() {
         val localData = loadFromLocal()
 
         if (isFetchData(localData)) {
@@ -30,7 +26,7 @@ abstract class RequestBound<ResultType, RequestType> {
     protected open fun isFetchData(localData: ResultType?): Boolean = localData == null
 
     private fun fetchFromRemote() {
-        mLiveData.loading(true)
+        loading(true)
         val call = createCall() ?: throw RuntimeException("Call not be null")
         call.enqueue(object : Callback<ApiResponse<RequestType>> {
             override fun onResponse(call: Call<ApiResponse<RequestType>>, response: Response<ApiResponse<RequestType>>) {
@@ -61,14 +57,14 @@ abstract class RequestBound<ResultType, RequestType> {
     }
 
     private fun onError(exception: Exception) {
-        mLiveData.loading(false)
-        mLiveData.error(exception)
+        loading(false)
+        error(exception)
         Log.e("REQUEST/ERROR", "${exception.message}")
         onCallFail(exception)
     }
 
     private fun onSuccess(result: ResultType?) {
-        mLiveData.loading(false)
+        loading(false)
         mLiveData.value = result
         Log.e("REQUEST/SUCCESS", Gson().toJson(result))
     }
@@ -82,8 +78,6 @@ abstract class RequestBound<ResultType, RequestType> {
 
     protected open fun saveCallResult(result: ResultType?) {
     }
-
-    fun asLiveData(): ResponseLiveData<ResultType> = mLiveData
 
     protected abstract fun convertToResult(result: RequestType?): ResultType?
 

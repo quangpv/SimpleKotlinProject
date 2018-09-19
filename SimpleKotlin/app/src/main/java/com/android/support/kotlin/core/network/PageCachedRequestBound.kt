@@ -9,7 +9,8 @@ import retrofit2.Response
 
 abstract class PageCachedRequestBound<PageType, ResultType, RequestType>(pageSize: Int) : PageRequestBound<PageType>(pageSize) {
 
-    init {
+    override fun execute() {
+        super.execute()
         if (!isMock())
             fetchFromRemote()
         else
@@ -23,7 +24,7 @@ abstract class PageCachedRequestBound<PageType, ResultType, RequestType>(pageSiz
     protected open fun isMock() = BuildConfig.MOCK_DATA
 
     private fun fetchFromRemote() {
-        mLiveData.loading(true)
+        loading(true)
         val call = createCall() ?: throw RuntimeException("Call not be null")
         call.enqueue(object : Callback<ApiResponse<RequestType>> {
             override fun onResponse(call: Call<ApiResponse<RequestType>>, response: Response<ApiResponse<RequestType>>) {
@@ -51,8 +52,8 @@ abstract class PageCachedRequestBound<PageType, ResultType, RequestType>(pageSiz
     }
 
     private fun onError(exception: Exception) {
-        mLiveData.loading(false)
-        mLiveData.error(exception)
+        loading(false)
+        error(exception)
         onCallFail(exception)
         Log.e("REQUEST/PAGE/ERROR", "${exception.message}")
     }
@@ -60,7 +61,7 @@ abstract class PageCachedRequestBound<PageType, ResultType, RequestType>(pageSiz
     private fun onSuccess(result: RequestType?) {
         mAppExecutors.diskIO().execute {
             saveCallResult(convertToResult(result))
-            mLiveData.loading(false)
+            loading(false)
             Log.e("REQUEST/PAGE/SUCCESS", Gson().toJson(result))
         }
     }
