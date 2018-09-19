@@ -2,7 +2,16 @@ package com.android.support.kotlin.core.livedata
 
 import android.arch.lifecycle.*
 
-open class ExtendLiveData<T> : MediatorLiveData<T>()
+open class ExtendLiveData<T> : MediatorLiveData<T>() {
+    private var mPreviousSource: LiveData<*>? = null
+
+    fun <S : Any?> fromSource(source: LiveData<S>, onChanged: (S?) -> Unit) {
+        if (mPreviousSource === source) return
+        if (mPreviousSource != null) removeSource(mPreviousSource!!)
+        mPreviousSource = source
+        if (mPreviousSource != null) super.addSource(source, onChanged)
+    }
+}
 
 fun <T> MutableLiveData<T>.call() {
     this.value = null
@@ -40,9 +49,7 @@ fun <X, Y> LiveData<X>.switchTo(function: (X?) -> LiveData<Y>): LiveData<Y> {
 }
 
 fun <T> LiveData<T>.forwardTo(liveData: ExtendLiveData<T>) {
-    liveData.addSource(this) {
-        liveData.postValue(it)
-    }
+    liveData.fromSource(this) { liveData.value = it }
 }
 
 fun <V, T> V?.nonNull(function: (V) -> LiveData<T>): LiveData<T> =

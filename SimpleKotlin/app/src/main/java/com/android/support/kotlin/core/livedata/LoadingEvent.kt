@@ -12,7 +12,6 @@ class LoadingEvent : SingleLiveEvent<Boolean>() {
                 numOfLoading--
                 if (numOfLoading < 0) numOfLoading = 0
                 if (numOfLoading == 0) super.postValue(false)
-
             }
         }
     }
